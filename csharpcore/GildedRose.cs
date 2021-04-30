@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace csharpcore
 {
@@ -12,30 +13,20 @@ namespace csharpcore
 
         public void UpdateSellIn(Item item)
         {
-              if (item.Name != "Sulfuras, Hand of Ragnaros")
-                {
-                    item.SellIn = item.SellIn - 1;
-                }
+            item.SellIn = item.SellIn - 1;
         }
 
         public void UpdateQuality()
         {
-            foreach(Item item in Items)
+            foreach (Item item in Items.Where(item => item.Name != "Sulfuras, Hand of Ragnaros"))
             {
-                // If AgedBrie:
-                //  If .Quality < 50 AND .SellIn < 0
-                //      Quality ++
-                // 
-                // 
 
                 if (item.Name != "Aged Brie" && item.Name != "Backstage passes to a TAFKAL80ETC concert")
                 {
                     if (item.Quality > 0)
                     {
-                        if (item.Name != "Sulfuras, Hand of Ragnaros")
-                        {
-                            item.Quality = item.Quality - 1;
-                        }
+                        item.Quality = item.Quality - 1;
+
                     }
                 }
                 else
@@ -73,7 +64,7 @@ namespace csharpcore
                     {
                         if (item.Name != "Backstage passes to a TAFKAL80ETC concert")
                         {
-                            if (item.Quality > 0 && item.Name != "Sulfuras, Hand of Ragnaros")
+                            if (item.Quality > 0)
                             {
                                 
                                 item.Quality = item.Quality - 1;
