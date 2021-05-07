@@ -58,15 +58,7 @@ namespace csharpcore
         {
             foreach (Item item in Items.Where(item => item.Name != "Sulfuras, Hand of Ragnaros"))
             {
-
-                if (QualityStrategyHandler.ContainsKey(item.Name))
-                {
-                    QualityStrategyHandler[item.Name](item);
-                }
-                else
-                {
-                    DefaultItemStrategy(item);
-                }
+                UpdateItemQuality(item);
 
                 UpdateSellIn(item);
 
@@ -88,6 +80,18 @@ namespace csharpcore
                         item.Quality = 0;
                     }
                 }
+            }
+        }
+
+        private void UpdateItemQuality(Item item)
+        {
+            if (QualityStrategyHandler.ContainsKey(item.Name))
+            {
+                QualityStrategyHandler[item.Name](item);
+            }
+            else
+            {
+                DefaultItemStrategy(item);
             }
         }
 
