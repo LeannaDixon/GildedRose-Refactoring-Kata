@@ -62,6 +62,9 @@ namespace csharpcore
 
                 UpdateSellIn(item);
 
+                /* Use Chain of responsibility here for the Update Sellin.
+                 * Tried on Friday 7 May 2021 with a failing test, Leanna reverted all changes
+                 * */
                 if (item.SellIn < 0)
                 {
                     if (item.Name == "Aged Brie")
