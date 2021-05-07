@@ -19,6 +19,7 @@ namespace csharpcore
             QualityStrategyHandler = new Dictionary<string, QualityStrategy>()
             {
                 {"Aged Brie", UpdateBrieQuality }
+             
             };
         }
 
@@ -32,7 +33,7 @@ namespace csharpcore
 
         public void UpdateSellIn(Item item)
         {
-            item.SellIn = item.SellIn - 1;
+            item.SellIn--;
         }
 
         public void UpdateQuality()
@@ -46,18 +47,6 @@ namespace csharpcore
                 }
                 else
                 {
-                    //if aged brie
-                    // quality < 50
-                    //quality++ to max 50
-
-                    //if backstage pass
-                    //if close
-                    //if really close
-                    //if expired
-
-                    //else
-                    //quality--
-
                     if (item.Name != "Backstage passes to a TAFKAL80ETC concert")
                     {
                         if (item.Quality > 0)
@@ -69,7 +58,7 @@ namespace csharpcore
                     {
                         if (item.Quality < 50)
                         {
-                            item.Quality = item.Quality + 1;
+                            item.Quality++;
 
                             if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
                             {
