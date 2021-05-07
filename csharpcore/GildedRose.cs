@@ -18,9 +18,27 @@ namespace csharpcore
 
             QualityStrategyHandler = new Dictionary<string, QualityStrategy>()
             {
-                {"Aged Brie", UpdateBrieQuality }
-             
+                {"Aged Brie", UpdateBrieQuality },
+                {"Backstage passes to a TAFKAL80ETC concert" , UpdateBackstageQuality }
             };
+        }
+
+        private void UpdateBackstageQuality(Item item)
+        {
+            if (item.Quality < 50)
+            {
+                item.Quality++;
+
+                if ((item.SellIn < 11) && (item.Quality < 50))
+                {
+                    item.Quality++;
+                }
+
+                if ((item.SellIn < 6) && (item.Quality < 50))
+                {
+                    item.Quality++;
+                }
+            }
         }
 
         private void UpdateBrieQuality(Item item)
@@ -47,33 +65,7 @@ namespace csharpcore
                 }
                 else
                 {
-                    if (item.Name != "Backstage passes to a TAFKAL80ETC concert")
-                    {
-                        if (item.Quality > 0)
-                        {
-                            item.Quality--;
-                        }
-                    }
-                    else
-                    {
-                        if (item.Quality < 50)
-                        {
-                            item.Quality++;
-
-                            if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
-                            {
-                                if ((item.SellIn < 11) && (item.Quality < 50))
-                                {
-                                    item.Quality++;
-                                }
-
-                                if ((item.SellIn < 6) && (item.Quality < 50))
-                                {
-                                    item.Quality++;
-                                }
-                            }
-                        }
-                    } 
+                    DefaultItemStrategy(item);
                 }
 
                 UpdateSellIn(item);
@@ -91,11 +83,19 @@ namespace csharpcore
                     {
                         item.Quality--;
                     }
-                    else
+                    else 
                     {
                         item.Quality = 0;
                     }
                 }
+            }
+        }
+
+        private static void DefaultItemStrategy(Item item)
+        {
+            if (item.Quality > 0)
+            {
+                item.Quality--;
             }
         }
     }
