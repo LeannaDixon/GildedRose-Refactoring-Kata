@@ -5,14 +5,14 @@ using System.Linq;
 namespace csharpcore
 {
     delegate void QualityStrategy(Item item);
-    delegate void SellInStrategy(Item item);
+    delegate void QualityStrategyWhenSellInLessThanZero(Item item);
 
     public class GildedRose
     {
         IList<Item> Items;
 
         Dictionary<string, QualityStrategy> QualityStrategyHandler;
-        Dictionary<string, SellInStrategy> SellInStrategyHandler;
+        Dictionary<string, QualityStrategyWhenSellInLessThanZero> QualityStrategyWhenSellInLessThanZeroHandler;
 
         public GildedRose(IList<Item> Items)
         {
@@ -24,7 +24,7 @@ namespace csharpcore
                 {"Backstage passes to a TAFKAL80ETC concert" , UpdateBackstageQuality }
             };
 
-            SellInStrategyHandler = new Dictionary<string, SellInStrategy>()
+            QualityStrategyWhenSellInLessThanZeroHandler = new Dictionary<string, QualityStrategyWhenSellInLessThanZero>()
             {
                 {"Aged Brie", UpdateBrieQualityWhenSellInLessThanZero },
                 {"Backstage passes to a TAFKAL80ETC concert" , UpdateBackstageQualityWhenSellInLessThanZero }
@@ -38,7 +38,7 @@ namespace csharpcore
             {
                 UpdateItemQuality(item);
                 UpdateSellIn(item);
-                UpdateItemSellInHandler(item);
+                UpdateItemQualityWhenSellInLessThanZero(item);
             }
         }
 
@@ -113,11 +113,11 @@ namespace csharpcore
             }
         }
 
-        private void UpdateItemSellInHandler(Item item)
+        private void UpdateItemQualityWhenSellInLessThanZero(Item item)
         {
-            if (SellInStrategyHandler.ContainsKey(item.Name))
+            if (QualityStrategyWhenSellInLessThanZeroHandler.ContainsKey(item.Name))
             {
-                SellInStrategyHandler[item.Name](item);
+                QualityStrategyWhenSellInLessThanZeroHandler[item.Name](item);
             }
             else
             {
