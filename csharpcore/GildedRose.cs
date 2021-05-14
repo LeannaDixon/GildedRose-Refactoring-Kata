@@ -26,8 +26,8 @@ namespace csharpcore
 
             SellInStrategyHandler = new Dictionary<string, SellInStrategy>()
             {
-                {"Aged Brie", UpdateBrieSellIn },
-                {"Backstage passes to a TAFKAL80ETC concert" , UpdateBackstageSellIn }
+                {"Aged Brie", UpdateBrieQualityWhenSellInLessThanZero },
+                {"Backstage passes to a TAFKAL80ETC concert" , UpdateBackstageQualityWhenSellInLessThanZero }
 
             };
         }
@@ -38,7 +38,7 @@ namespace csharpcore
             {
                 UpdateItemQuality(item);
                 UpdateSellIn(item);
-                UpdateItemSellIn(item);
+                UpdateItemQualityWhenSellInLessThanZero(item);
             }
         }
 
@@ -73,27 +73,27 @@ namespace csharpcore
             item.SellIn--;
         }
 
-       private static void UpdateItemSellIn(Item item) {
+       private static void UpdateItemQualityWhenSellInLessThanZero(Item item) {
             if (item.SellIn < 0)
             {
                 if (item.Name == "Aged Brie")
                 {
-                    if (item.Quality < 50)
-                    {
-                        item.Quality++;
-                    }
+                    //updates qualtiy
+                    UpdateBrieQualityWhenSellInLessThanZero(item);
                 }
                 else if ((item.Name != "Backstage passes to a TAFKAL80ETC concert") && (item.Quality > 0))
                 {
-                    item.Quality--;
+                    //updates quality
+                    UpdateDefaultQualityWhenSellInLessThanZero(item);
                 }
                 else
                 {
-                    item.Quality = 0;
+                    //updates quality
+                    UpdateBackstageQualityWhenSellInLessThanZero(item);
                 }
             }
        }
-        private static void UpdateBrieSellIn(Item item)
+        private static void UpdateBrieQualityWhenSellInLessThanZero(Item item)
         {
             if (item.SellIn < 0)
             {
@@ -104,16 +104,14 @@ namespace csharpcore
             }
         }
 
-        private static void UpdateBackstageSellIn(Item item)
+        private static void UpdateBackstageQualityWhenSellInLessThanZero(Item item)
         {
-            if (item.SellIn > 0)
-            {
-                item.SellIn = 0;
-            }
+            item.Quality = 0;
         }
 
-        private static void UpdateDefaultSellIn(Item item)
+        private static void UpdateDefaultQualityWhenSellInLessThanZero(Item item)
         {
+            item.Quality--;
 
         }
 
@@ -129,18 +127,6 @@ namespace csharpcore
             }
         }
 
-        private void UpdateItemSellInHandler(Item item)
-        {
-            if (SellInStrategyHandler.ContainsKey(item.Name))
-            {
-                SellInStrategyHandler[item.Name](item);
-            }
-            else
-            {
-                DefaultItemSellInStrategy(item);
-            }
-        }
-
         private static void DefaultItemQualityStrategy(Item item)
         {
             if (item.Quality > 0)
@@ -148,12 +134,6 @@ namespace csharpcore
                 item.Quality--;
             }
         }
-        private static void DefaultItemSellInStrategy(Item item)
-        {
-            if (item.SellIn > 0)
-            {
-                item.SellIn--;
-            }
-        }
+
     }
 }
