@@ -38,7 +38,7 @@ namespace csharpcore
             {
                 UpdateItemQuality(item);
                 UpdateSellIn(item);
-                UpdateItemQualityWhenSellInLessThanZero(item);
+                UpdateItemSellInHandler(item);
             }
         }
 
@@ -73,26 +73,6 @@ namespace csharpcore
             item.SellIn--;
         }
 
-       private static void UpdateItemQualityWhenSellInLessThanZero(Item item) {
-            if (item.SellIn < 0)
-            {
-                if (item.Name == "Aged Brie")
-                {
-                    //updates qualtiy
-                    UpdateBrieQualityWhenSellInLessThanZero(item);
-                }
-                else if ((item.Name != "Backstage passes to a TAFKAL80ETC concert") && (item.Quality > 0))
-                {
-                    //updates quality
-                    UpdateDefaultQualityWhenSellInLessThanZero(item);
-                }
-                else
-                {
-                    //updates quality
-                    UpdateBackstageQualityWhenSellInLessThanZero(item);
-                }
-            }
-       }
         private static void UpdateBrieQualityWhenSellInLessThanZero(Item item)
         {
             if (item.SellIn < 0)
@@ -106,12 +86,18 @@ namespace csharpcore
 
         private static void UpdateBackstageQualityWhenSellInLessThanZero(Item item)
         {
-            item.Quality = 0;
+            if (item.SellIn < 0)
+            {
+                item.Quality = 0;
+            }
         }
 
         private static void UpdateDefaultQualityWhenSellInLessThanZero(Item item)
-        {
-            item.Quality--;
+        {   
+            if((item.SellIn < 0)  && (item.Quality > 0))
+            {
+                item.Quality--;
+            }
 
         }
 
@@ -124,6 +110,18 @@ namespace csharpcore
             else
             {
                 DefaultItemQualityStrategy(item);
+            }
+        }
+
+        private void UpdateItemSellInHandler(Item item)
+        {
+            if (SellInStrategyHandler.ContainsKey(item.Name))
+            {
+                SellInStrategyHandler[item.Name](item);
+            }
+            else
+            {
+                UpdateDefaultQualityWhenSellInLessThanZero(item);
             }
         }
 
