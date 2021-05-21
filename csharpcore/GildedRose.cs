@@ -9,86 +9,35 @@ namespace csharpcore
 
     public class GildedRose
     {
-        IList<Item> Items;
+        readonly IList<Item> _items;
+        readonly Dictionary<string, QualityStrategyWhenSellInLessThanZero> _qualityStrategyWhenSellInLessThanZeroHandler;
+        readonly ItemQualityUpdateStrategyFactory _itemQualityUpdateStrategyFactory = new ItemQualityUpdateStrategyFactory();
 
-        Dictionary<string, QualityStrategy> QualityStrategyHandler;
-        Dictionary<string, QualityStrategyWhenSellInLessThanZero> QualityStrategyWhenSellInLessThanZeroHandler;
 
-        public GildedRose(IList<Item> Items)
+        public GildedRose(IList<Item> items)
         {
             
-            this.Items = Items;
+            _items = items;
 
-            QualityStrategyHandler = new Dictionary<string, QualityStrategy>()
+            //convert to chain of responsiblity
+            _qualityStrategyWhenSellInLessThanZeroHandler = new Dictionary<string, QualityStrategyWhenSellInLessThanZero>()
             {
-                {"Aged Brie", UpdateBrieQuality },
-                {"Backstage passes to a TAFKAL80ETC concert" , UpdateBackstageQuality }
-            };
-
-            QualityStrategyWhenSellInLessThanZeroHandler = new Dictionary<string, QualityStrategyWhenSellInLessThanZero>()
-            {
-                {"Aged Brie", UpdateBrieQualityWhenSellInLessThanZero },
-                {"Backstage passes to a TAFKAL80ETC concert" , UpdateBackstageQualityWhenSellInLessThanZero }
+                { "Aged Brie", UpdateBrieQualityWhenSellInLessThanZero },
+                { "Backstage passes to a TAFKAL80ETC concert" , UpdateBackstageQualityWhenSellInLessThanZero }
             };
         }
 
         public void UpdateQuality()
         {
-            foreach (Item item in Items.Where(item => item.Name != "Sulfuras, Hand of Ragnaros"))
+            foreach (Item item in _items.Where(item => item.Name != "Sulfuras, Hand of Ragnaros"))
             {
-                var newUpdateQualityFactory = new NewUpdateQualityFactory();
-               newUpdateQualityFactory.CreateUpdateQuality(item).UpdateQuality();
+                //alreday converted to factory
+                _itemQualityUpdateStrategyFactory.Create(item).UpdateQuality();
 
-
-                //UpdateItemQuality(item);
                 UpdateSellIn(item);
+
+                //TODO: convert to chain of responsibility
                 UpdateItemQualityWhenSellInLessThanZero(item);
-            }
-        }
-
-        private void UpdateItemQuality(Item item)
-        {
-            if (QualityStrategyHandler.ContainsKey(item.Name))
-            {
-                QualityStrategyHandler[item.Name](item);
-            }
-            else
-            {
-                DefaultItemQualityStrategy(item);
-            }
-        }
-
-        private static void DefaultItemQualityStrategy(Item item)
-        {
-            if (item.Quality > 0)
-            {
-                item.Quality--;
-            }
-        }
-
-        private void UpdateBrieQuality(Item item)
-        {
-            if (item.Quality < 50)
-            {
-                item.Quality++;
-            }
-        }
-
-        private void UpdateBackstageQuality(Item item)
-        {
-            if (item.Quality < 50)
-            {
-                item.Quality++;
-
-                if ((item.SellIn < 11) && (item.Quality < 50))
-                {
-                    item.Quality++;
-                }
-
-                if ((item.SellIn < 6) && (item.Quality < 50))
-                {
-                    item.Quality++;
-                }
             }
         }
 
@@ -97,11 +46,13 @@ namespace csharpcore
             item.SellIn--;
         }
 
+
+        //convert all of below to chain of responsibility
         private void UpdateItemQualityWhenSellInLessThanZero(Item item)
         {
-            if (QualityStrategyWhenSellInLessThanZeroHandler.ContainsKey(item.Name))
+            if (_qualityStrategyWhenSellInLessThanZeroHandler.ContainsKey(item.Name))
             {
-                QualityStrategyWhenSellInLessThanZeroHandler[item.Name](item);
+                _qualityStrategyWhenSellInLessThanZeroHandler[item.Name](item);
             }
             else
             {

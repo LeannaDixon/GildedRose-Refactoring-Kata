@@ -4,9 +4,9 @@ using System.Text;
 
 namespace csharpcore
 {
-    public class NewUpdateAgedBrieQuality : NewUpdateQuality
+    public class AgedBrieQualityUpdateStrategy : DefaultQualityUpdateStrategy
     {
-        public NewUpdateAgedBrieQuality(Item item) : base(item)
+        public AgedBrieQualityUpdateStrategy(Item item) : base(item)
         {
 
         }

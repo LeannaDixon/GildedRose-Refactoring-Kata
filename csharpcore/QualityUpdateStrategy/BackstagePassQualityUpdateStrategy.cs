@@ -4,9 +4,9 @@ using System.Text;
 
 namespace csharpcore
 {
-    public class NewUpdateBackstagePassesQuality : NewUpdateQuality
+    public class BackstagePassQualityUpdateStrategy : DefaultQualityUpdateStrategy
     {
-        public NewUpdateBackstagePassesQuality(Item item) : base(item)
+        public BackstagePassQualityUpdateStrategy(Item item) : base(item)
         {
 
         }

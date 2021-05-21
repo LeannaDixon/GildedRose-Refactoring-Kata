@@ -4,11 +4,11 @@ using System.Text;
 
 namespace csharpcore
 {
-    public class NewUpdateQuality 
+    public class DefaultQualityUpdateStrategy 
     {
         protected Item Item { get; }
 
-        public NewUpdateQuality(Item item)
+        public DefaultQualityUpdateStrategy(Item item)
         {
             Item = item;
         }
