@@ -16,6 +16,7 @@ namespace csharpcore
 
         public GildedRose(IList<Item> Items)
         {
+            
             this.Items = Items;
 
             QualityStrategyHandler = new Dictionary<string, QualityStrategy>()
@@ -28,7 +29,6 @@ namespace csharpcore
             {
                 {"Aged Brie", UpdateBrieQualityWhenSellInLessThanZero },
                 {"Backstage passes to a TAFKAL80ETC concert" , UpdateBackstageQualityWhenSellInLessThanZero }
-
             };
         }
 
@@ -36,9 +36,41 @@ namespace csharpcore
         {
             foreach (Item item in Items.Where(item => item.Name != "Sulfuras, Hand of Ragnaros"))
             {
-                UpdateItemQuality(item);
+                var newUpdateQualityFactory = new NewUpdateQualityFactory();
+               newUpdateQualityFactory.CreateUpdateQuality(item).UpdateQuality();
+
+
+                //UpdateItemQuality(item);
                 UpdateSellIn(item);
                 UpdateItemQualityWhenSellInLessThanZero(item);
+            }
+        }
+
+        private void UpdateItemQuality(Item item)
+        {
+            if (QualityStrategyHandler.ContainsKey(item.Name))
+            {
+                QualityStrategyHandler[item.Name](item);
+            }
+            else
+            {
+                DefaultItemQualityStrategy(item);
+            }
+        }
+
+        private static void DefaultItemQualityStrategy(Item item)
+        {
+            if (item.Quality > 0)
+            {
+                item.Quality--;
+            }
+        }
+
+        private void UpdateBrieQuality(Item item)
+        {
+            if (item.Quality < 50)
+            {
+                item.Quality++;
             }
         }
 
@@ -60,17 +92,31 @@ namespace csharpcore
             }
         }
 
-        private void UpdateBrieQuality(Item item)
-        {
-            if (item.Quality < 50)
-            {
-                item.Quality++;
-            }
-        }
-
         public void UpdateSellIn(Item item)
         {
             item.SellIn--;
+        }
+
+        private void UpdateItemQualityWhenSellInLessThanZero(Item item)
+        {
+            if (QualityStrategyWhenSellInLessThanZeroHandler.ContainsKey(item.Name))
+            {
+                QualityStrategyWhenSellInLessThanZeroHandler[item.Name](item);
+            }
+            else
+            {
+                UpdateDefaultQualityWhenSellInLessThanZero(item);
+            }
+        }
+
+
+        private static void UpdateDefaultQualityWhenSellInLessThanZero(Item item)
+        {
+            if ((item.SellIn < 0) && (item.Quality > 0))
+            {
+                item.Quality--;
+            }
+
         }
 
         private static void UpdateBrieQualityWhenSellInLessThanZero(Item item)
@@ -89,47 +135,6 @@ namespace csharpcore
             if (item.SellIn < 0)
             {
                 item.Quality = 0;
-            }
-        }
-
-        private static void UpdateDefaultQualityWhenSellInLessThanZero(Item item)
-        {   
-            if((item.SellIn < 0)  && (item.Quality > 0))
-            {
-                item.Quality--;
-            }
-
-        }
-
-        private void UpdateItemQuality(Item item)
-        {
-            if (QualityStrategyHandler.ContainsKey(item.Name))
-            {
-                QualityStrategyHandler[item.Name](item);
-            }
-            else
-            {
-                DefaultItemQualityStrategy(item);
-            }
-        }
-
-        private void UpdateItemQualityWhenSellInLessThanZero(Item item)
-        {
-            if (QualityStrategyWhenSellInLessThanZeroHandler.ContainsKey(item.Name))
-            {
-                QualityStrategyWhenSellInLessThanZeroHandler[item.Name](item);
-            }
-            else
-            {
-                UpdateDefaultQualityWhenSellInLessThanZero(item);
-            }
-        }
-
-        private static void DefaultItemQualityStrategy(Item item)
-        {
-            if (item.Quality > 0)
-            {
-                item.Quality--;
             }
         }
 
